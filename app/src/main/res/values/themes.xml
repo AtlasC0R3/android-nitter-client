@@ -1,0 +1,4 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Theme.Nitterish" parent="Theme.MaterialComponents.DayNight" />
+</resources>

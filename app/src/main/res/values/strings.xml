@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Nitter-ish</string>
+    <string name="title_activity_what_am_idoing_with_my_life">WhatAmIDoingWithMyLife</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+</resources>
