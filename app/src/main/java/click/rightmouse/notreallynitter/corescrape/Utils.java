@@ -125,7 +125,6 @@ public class Utils {
         // List of random Nitter instances
         final ArrayList<String> instances = new ArrayList<>(Arrays.asList(
                 "nitter.absturztau.be",
-                "nitter.net",
                 "nitter.moomoo.me",
                 "nitter.hostux.net",
                 "nitter.projectsegfau.lt"));
