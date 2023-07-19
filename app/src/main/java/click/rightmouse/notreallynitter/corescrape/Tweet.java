@@ -1,13 +1,11 @@
 package click.rightmouse.notreallynitter.corescrape;
 
-import android.util.Log;
-
-import java.util.ArrayList;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import java.util.ArrayList;
 
 public class Tweet {
     public Long tweetId = 0L;
@@ -123,20 +121,15 @@ public class Tweet {
             // get the entire text from the <div> element, with full <a href=""> links included
             // Finally, we get the entire text and HTML of the <div> element (including the modified <a> elements) using the outerHtml() method.
             // String divText = conElement.outerHtml();
-                    
-            // return conElement.wholeText();
-            // return conElement.wholeText().replace("\n         ", "");
-            return conElement.text();
+
+            return conElement.wholeText();
             // now that we've taken care of all of the link nonsense, we can finally get the wholeText()
-            // as for the janky replace(), I don't fuckin' know, man.
             
         } else return null;  // if the tweet is empty, don't do any of that.
     }
 
     public void fromElement(Element element){
         attributions = new ArrayList<>();
-
-        Log.i("FUCK", element.toString());
 
         Element conElement = element.select("div.tweet-content").first();
         Elements pinnedElements = element.select(".pinned");
@@ -212,24 +205,20 @@ public class Tweet {
                 continue;
             }
             switch (stat.selectFirst("div.icon-container > span").attr("class")) {
-                case "icon-comment":
+                case "icon-comment" ->
                     // replies
-                    this.replies = metric;
-                    break;
-                case "icon-retweet":
+                        this.replies = metric;
+                case "icon-retweet" ->
                     // retweets
-                    this.retweets = metric;
-                    break;
-                case "icon-quote":
+                        this.retweets = metric;
+                case "icon-quote" ->
                     // quote RTs
-                    this.quotes = metric;
-                    break;
-                case "icon-heart":
+                        this.quotes = metric;
+                case "icon-heart" ->
                     // likes
-                    this.likes = metric;
-                    break;
-                default:
-                    break;
+                        this.likes = metric;
+                default -> {
+                }
             }
         }
 

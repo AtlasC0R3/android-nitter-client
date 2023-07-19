@@ -56,7 +56,6 @@ public class Profile {
 
         Element bioElement = page.select("div.profile-bio > p").first();
         if(bioElement != null) biography = bioElement.wholeText();
-        // FIXME: Why The Fuck Does Jsoup Not Do Proper Newlines!!!
 
         Elements locationElement = page.select(".profile-location");
         location = locationElement.text();
