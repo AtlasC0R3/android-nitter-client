@@ -11,13 +11,13 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Nitterish"
+        android:theme="@style/Theme.Litter"
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="33">
         <activity
             android:name=".ProfileActivity"
             android:exported="false"
-            android:label="@string/title_activity_profile" />
+            android:label="Profile" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
