@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -54,9 +55,12 @@ import click.rightmouse.notreallynitter.corescrape.Tweet
 import click.rightmouse.notreallynitter.corescrape.Utils
 import click.rightmouse.notreallynitter.ui.theme.NitterishTheme
 import coil.compose.AsyncImage
-import com.android.volley.VolleyError
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Response
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import java.io.IOException
 
 
 class ProfileActivity : ComponentActivity() {
@@ -84,7 +88,7 @@ class ProfileActivity : ComponentActivity() {
         val instance = extras?.getString("instance") ?: "nitter.net"
         profileUrl = extras?.getString("url")
 
-        // Allow app to draw under status/navigatin bars
+        // Allow app to draw under status/navigation bars
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
 
@@ -183,7 +187,7 @@ class ProfileActivity : ComponentActivity() {
                             val cursors = Utils.getCursors(latestResultDocument ?: resultDocument)
                             val nextUp = cursors[1]
                             val urlToFetch = "$profileUrl?cursor=$nextUp"
-                            utils.getJsoupDocument(
+                            /*utils.getJsoupDocument(
                                 urlToFetch,
                                 object : Utils.VolleyCallback{
                                     override fun onSuccess(result: Document?) {
@@ -191,11 +195,27 @@ class ProfileActivity : ComponentActivity() {
                                         tweets.addAll(newTweets)
                                         latestResultDocument = result
                                     }
+                                })*/
 
-                                    override fun onError(error: VolleyError?) {
-                                        TODO("Haven't implemented error handling.")
+                            utils.getOkHttpUrl(
+                                urlToFetch,
+                                object: Callback {
+                                    override fun onFailure(call: Call, e: IOException) {
+                                        // TODO: Implement error handling here too.
+                                        Toast.makeText(
+                                            this@ProfileActivity,
+                                            "Failed to fetch new posts.",
+                                            Toast.LENGTH_SHORT).show()
                                     }
-                                })
+
+                                    override fun onResponse(call: Call, response: Response) {
+                                        latestResultDocument = Jsoup.parse(response.body!!.string())
+
+                                        val newTweets = Tweet.fromPage(latestResultDocument)
+                                        tweets.addAll(newTweets)
+                                    }
+                                }
+                            )
                         }
                     }
                 }
@@ -274,7 +294,8 @@ fun GenerateProfile(user: Profile, instanceToUse: String){
                 .align(Alignment.Center)
                 .padding(4.dp)
             ){
-                Spacer(Modifier
+                Spacer(
+                    Modifier
                         .statusBarsPadding()
                         .height(8.dp))
 
@@ -410,9 +431,10 @@ private fun drawFadeOnImage(
 
 @Composable
 fun GeneratePost(post: Tweet, originalProfile: Profile, instanceToUse: String){
-    // You know, I could use BoxWithConstraints here. But I won't; because the performance of those
-    // aren't negligible, and because we wouldn't really hide a lot, or save much space, then
-    // I just won't. I'll keep this as is. At least for now.
+    // You know, I could use BoxWithConstraints here like I did with the Profile view.
+    // But I won't; because the performance of those aren't negligible,
+    // and because we wouldn't really hide a lot, or save much space, then I just won't.
+    // I'll keep this as is. At least for now.
 
     Surface(shape = MaterialTheme.shapes.medium, tonalElevation =4.dp, modifier=Modifier.padding(horizontal = 8.dp, vertical=4.dp)){
         Column(Modifier.padding(4.dp)) {

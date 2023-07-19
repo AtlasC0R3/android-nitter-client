@@ -11,8 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.component1
 import androidx.core.util.component2
 import click.rightmouse.notreallynitter.corescrape.Utils
-import com.android.volley.VolleyError
-import org.jsoup.nodes.Document
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Response
+import java.io.IOException
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         val newIntent = Intent(this@MainActivity, ProfileActivity::class.java)
         val (url, instance) = Utils.genNitterUrl(handle)
 
-        utils.getJsoupDocument(
+        /*utils.getJsoupDocument(
             url,
             object : Utils.VolleyCallback{
                 override fun onSuccess(result: Document?) {
@@ -37,11 +39,23 @@ class MainActivity : AppCompatActivity() {
                     newIntent.putExtra("url", url)
                     startActivity(newIntent)
                 }
+            })*/
 
-                override fun onError(error: VolleyError?) {
-                    TODO("Haven't implemented error handling.")
+        utils.getOkHttpUrl(
+            url,
+            object: Callback{
+                override fun onFailure(call: Call, e: IOException) {
+                    TODO("Not yet implemented")
                 }
-            })
+
+                override fun onResponse(call: Call, response: Response) {
+                    newIntent.putExtra("profile", response.body?.string())
+                    newIntent.putExtra("instance", instance)
+                    newIntent.putExtra("url", url)
+                    startActivity(newIntent)
+                }
+            }
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

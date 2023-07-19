@@ -1,7 +1,10 @@
 package click.rightmouse.notreallynitter.corescrape;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -43,25 +46,32 @@ public class Tweet {
         this.quote = null;
     }
 
+    public static ArrayList<Tweet> fromPageString(String page){
+        return fromPage(Jsoup.parse(page));
+    }
+
     public static ArrayList<Tweet> fromPage(Document page){
+        page.outputSettings().prettyPrint(false);
         return fromElements(page.select("div.timeline-item"));
     }
 
     public static ArrayList<Tweet> fromElements(Elements timelineItems){
         ArrayList<Tweet> tweets = new ArrayList<>();
-        Tweet tweet = new Tweet();  // tongue twister.
+        // Tweet tweet;
 
         for(Element tweetElement : timelineItems){
             // TODO: Hmm, I obviously have no idea what you're doing, but you probably want to declare the "tweet" variable inside the loop to begin with.
             // https://linuxrocks.online/@friend/110093714781302845
             if(tweetElement.hasClass("show-more")) continue;  // if it's one of those "Load newest" buttons, give up
-            tweet = new Tweet();  // VERY IMPORTANT line of code, it wipes the previous Tweets from this for loop
+            // tweet = new Tweet();  VERY IMPORTANT line of code, it wipes the previous Tweets from this for loop
                                   // so that we don't get leftover values.
             // FUCKING FUCK FUCK GOD DAMMIT YOU FUCKING CUNT SHIT GOD FUCKING I AM SO FUCKING FED UP WITH COMPUTERS
             // HOLY FUCKING SHIT FUCK YOU FUCK YOU FUCK YOU FUCK YOU FUCK YOU FUCK YOU THAT'S WHY YOU HAD LEFTOVER
             // VALUES BECAUSE WE DIDN'T RESET THE TWEET FOR EVERY ONE OF THEM THERE IS, GOD DAMMIT FOR FUCK'S SAKE
             // TWO MILLION YEARS OF CONSTANT EVOLUTION TO MAKE A FUCKING DUMBASS, WHAT THE FUCK AM I? WHY AM I EVEN
             // HERE? WHAT THE FUCK DO I CONTRIBUTE IF I CAN'T UNDERSTAND MY OWN BENIGN MESS, GOD. FUCKING. DAMMIT.
+
+            Tweet tweet = new Tweet();
 
             tweet.fromElement(tweetElement);
             tweets.add(tweet);
@@ -123,8 +133,10 @@ public class Tweet {
         } else return null;  // if the tweet is empty, don't do any of that.
     }
 
-    public Tweet fromElement(Element element){
+    public void fromElement(Element element){
         attributions = new ArrayList<>();
+
+        Log.i("FUCK", element.toString());
 
         Element conElement = element.select("div.tweet-content").first();
         Elements pinnedElements = element.select(".pinned");
@@ -236,7 +248,6 @@ public class Tweet {
 
         // TODO: if there are replies on current tweet's post, also parse them
 
-        return this;
     }
 
     // public Tweet fromId(Long id) throws Exception{

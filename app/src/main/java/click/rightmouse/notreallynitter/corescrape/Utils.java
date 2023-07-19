@@ -4,26 +4,26 @@ import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+
 public class Utils {
     Context context;
+    OkHttpClient client;
 
     public Utils(Context context) {
         this.context = context;
+        this.client = new OkHttpClient();
     }
 
     public static String parseDate(String title){
@@ -73,7 +73,7 @@ public class Utils {
         return new Pair<>(String.format("https://%s/%s", instance, uri), instance);
     }
 
-    public void getJsoupDocument(String url, final VolleyCallback callback){
+    /*public void getJsoupDocument(String url, final VolleyCallback callback){
         RequestQueue queue = Volley.newRequestQueue(context);
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -88,13 +88,17 @@ public class Utils {
                     }
                 });
         queue.add(stringRequest);
-    }
-    public interface VolleyCallback {
-        void onSuccess(Document result);
-        void onError(VolleyError error) throws VolleyError;
+    }*/
+
+    public void getOkHttpUrl(String url, Callback callback) throws IOException{
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(callback);
     }
 
-    public void getNitterPage(String uri) {
+    /*public void getNitterPage(String uri) {
         // don't use this, I'm going to have a McFucking heart attack.
         RequestQueue queue = Volley.newRequestQueue(context);
 
@@ -115,13 +119,12 @@ public class Utils {
         });
 
         // return Jsoup.connect(strong).cookie("hlsPlayback", "on").get();
-    }
+    }*/
 
     public static String getNitterInstance(){
         // List of random Nitter instances
         final ArrayList<String> instances = new ArrayList<>(Arrays.asList(
                 "nitter.absturztau.be",
-                "nitter.it",
                 "nitter.net",
                 "nitter.moomoo.me",
                 "nitter.hostux.net",
